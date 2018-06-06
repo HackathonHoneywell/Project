@@ -64,19 +64,19 @@ session_start();
       <ul class="nav nav-pills nav-stacked">
         <li ><a href="http://localhost/completeproject/HomePage.php">Live Projects</a></li>
         <li><a href="http://localhost/completeproject/DoneProject.php">Done Projects</a></li>
-    <li class="active"><a href="http://localhost/completeproject/MyProject.php">My Projects</a></li>
-    <li><a href="http://localhost/completeproject/recommendation.php">Recommendatios</a></li>
-	<li><a href="http://localhost/completeproject/MyBackLiveProject.php">Backed Projects</a></li>
+		<li class="active"><a href="http://localhost/completeproject/MyProject.php">My Projects</a></li>
+		<li><a href="http://localhost/completeproject/recommendation.php">Recommendatios</a></li>
+		<li ><a href="http://localhost/completeproject/MyBackLiveProject.php">Backed Project</a></li>
       </ul>
       <hr class="hidden-sm hidden-md hidden-lg">
-    <h2>About Crowd Funding</h2>
+	  <h2>About Crowd Funding</h2>
       
       <p>Crowd Funding helps artists, techies, NGOS, and other creators find the resources and support they need to make their ideas a reality. To date, tens of thousands of creative projects — big and small — have come to life with the support of the Crowd Funding community.</p>
       <h3>Links</h3>
       <p>https://www.crowdfunding.com</p>
     </div>
     <!-- add your code here akshay-->
-  <div class="col-sm-8">
+	<div class="col-sm-8">
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -90,66 +90,112 @@ session_start();
     <div style="postion:right">
         
       <ul class="nav navbar-nav">
-      <li><a style="color:white" href="MyProject.php" >LiveProject</a></li>
-        <li><a href="MyDoneProject.php">DoneProjects</a></li>
-    <li><a href="CreateProject.php">CreateProjects</a></li>
+	    <li ><a href="http://localhost/completeproject/MyProject.php">LiveProject</a></li>
+        <li><a href="http://localhost/completeproject/DoneProject.php" >DoneProjects</a></li>
+		<li><a href="http://localhost/completeproject/CreateProject.php">CreateProjects</a></li>
       </ul>
-    </div>  
+    </div>	
   </div>
 </nav>
 
-  <div class="col-sm-8">
-    <div class="wrapper">
+	<div class="col-sm-8">
+		<div class="wrapper">
   <div class="main app form" id="main"><!-- Main Section-->
 
     <div id="pricing" class="pricing-section text-center">
       <div class="container">
-    
+	  
         <div class="col-md-8 col-sm-8 nopadding">
-    
+
 <?php
-$username=$_SESSION["users"];
+
+$user=$_SESSION['user'];
+
+$title=$_POST['title'];
+$description=$_POST['description'];
+$category=$_POST['category'];
+
+$fromdate=$_POST['fromdate'];
+$todate=$_POST['todate'];
+$requiredfunds=(int)$_POST['requiredfunds'];
+
+$phno=(int)$_POST['phno'];
+$emailid=$_POST['emailid'];
+
+$fund1=(int)$_POST['fund1'];
+$reward11=$_POST['reward11'];
+$reward12=$_POST['reward12'];
+
+$fund2=(int)$_POST['fund2'];
+$reward21=$_POST['reward21'];
+$reward22=$_POST['reward22'];
+
+$fund3=(int)$_POST['fund3'];
+$reward31=$_POST['reward31'];
+$reward32=$_POST['reward32'];
+
+$fund4=(int)$_POST['fund4'];
+$reward41=$_POST['reward41'];
+$reward42=$_POST['reward42'];
+
+$accnumber=(int)$_POST['accnumber'];
+$accname=$_POST['accname'];
+$acccode=$_POST['ifsccode'];
+
 $mysqli = new mysqli("localhost", "root","","project");
+$countquery="SELECT * FROM projectlist ";
+$countres=$mysqli->query($countquery);
+$projectid=0;
 
-$userquery = $mysqli->query("SELECT projectId FROM createp Where createName= '$username'");
+	while($row = mysqli_fetch_row($countres))
+	{
+		$projectid++;
+	}
 
-if($userquery==false)
+$projectid++;
+
+$insertquery="INSERT INTO projectlist (projectId, projectName, description,fromD,toD,likes,moneyFunded,amountN,completed,categoryId,backers,phoneNo,email,link)VALUES ('$projectid', '$title', '$description','$fromdate','$todate',0,0,'$requiredfunds',0,1,0,'$phno','$emailid','')";
+if($mysqli->query($insertquery )==true)
 {
-  echo "error occured";
+	
 }
 else
 {
-  while ($row = mysqli_fetch_row($userquery))
-  {
-    $projectid=(int)$row[0];
-    
-      $projectquery = $mysqli->query("SELECT * FROM projectlist Where completed=FALSE AND projectId= $projectid");
-      while($row1= mysqli_fetch_row($projectquery))
-      {
-        echo '
-          <div class="col-sm-4" id="a">
-            <div class="table-left wow fadeInUp" data-wow-delay="0.4s">
-              <div class="pricing-details">
-                <h2 id="b">'.$row1[1].'</h2>           
-                <p id="c">'.$row1[2].'</p>
-        <form action="EditPage.php" method="post">
-        <input type="text" style="display:none" name="name" value="'.$projectid.'"><br>
-        <input class="btn btn-primary btn-action btn-fill" type="submit" value="EDIT">
-        </form>
-		<form action="DoneButton.php" method="post">
-        <input type="text" style="display:none" name="names" value="'.$projectid.'"><br>
-        <input class="btn btn-primary btn-action btn-fill" type="submit" value="Done">
-        </form>
-              </div>
-            </div>
-          </div>';
-      }
-    
-  }
+	
 }
 
-?>    
-    
+$insertaccountdetails="INSERT INTO account (projectId,cardHolderName,accountNo,IFSC) VALUES('$projectid','$accname','$accnumber','$acccode')";
+if($mysqli->query($insertaccountdetails )==true)
+{
+
+}
+else
+{
+	
+}
+
+$insertrewards="INSERT INTO createp (projectId,createName) VALUES('$projectid','$user')";
+if($mysqli->query($insertrewards )==true)
+{
+	
+}
+else
+{
+	
+}
+
+$insertrewards="INSERT INTO rewards (projectId,fund1,reward11,reward12,fund2,reward21,reward22,fund3,reward31,reward32,fund4,reward41,reward42) VALUES('$projectid','$fund1','$reward11','$reward12','$fund2','$reward21','$reward22','$fund3','$reward31','$reward32','$fund4','$reward41','$reward42')";
+if($mysqli->query($insertrewards )==true)
+{
+	
+}
+else
+{
+	
+}
+?>
+<h1 style="color:MediumSeaGreen;" >SUBMITED SUCCESSFULLY</h1>
+		
       </div>
 
      </div>         
@@ -165,6 +211,9 @@ else
 <div class="jumbotron text-center" style="margin-bottom:0">
   <p>Thanks for visiting Crowd Funding</p>
 </div>
+</script>
 
 </body>
 </html>
+
+

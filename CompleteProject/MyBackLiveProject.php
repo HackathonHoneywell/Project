@@ -64,9 +64,9 @@ session_start();
       <ul class="nav nav-pills nav-stacked">
         <li ><a href="http://localhost/completeproject/HomePage.php">Live Projects</a></li>
         <li><a href="http://localhost/completeproject/DoneProject.php">Done Projects</a></li>
-    <li class="active"><a href="http://localhost/completeproject/MyProject.php">My Projects</a></li>
-    <li><a href="http://localhost/completeproject/recommendation.php">Recommendatios</a></li>
-	<li><a href="http://localhost/completeproject/MyBackLiveProject.php">Backed Projects</a></li>
+    <li ><a href="http://localhost/completeproject/MyProject.php">My Projects</a></li>
+    <li ><a href="http://localhost/completeproject/recommendation.php">Recommendatios</a></li>
+     <li class="active"><a href="http://localhost/completeproject/MyBackLiveProject.php">Backed Project</a></li>
       </ul>
       <hr class="hidden-sm hidden-md hidden-lg">
     <h2>About Crowd Funding</h2>
@@ -90,9 +90,8 @@ session_start();
     <div style="postion:right">
         
       <ul class="nav navbar-nav">
-      <li><a style="color:white" href="MyProject.php" >LiveProject</a></li>
-        <li><a href="MyDoneProject.php">DoneProjects</a></li>
-    <li><a href="CreateProject.php">CreateProjects</a></li>
+      <li><a style="color:white" href="MyBackLiveProject.php" >LiveProject</a></li>
+        <li><a href="MyBackDoneProject.php">DoneProjects</a></li>
       </ul>
     </div>  
   </div>
@@ -109,9 +108,10 @@ session_start();
     
 <?php
 $username=$_SESSION["users"];
+
 $mysqli = new mysqli("localhost", "root","","project");
 
-$userquery = $mysqli->query("SELECT projectId FROM createp Where createName= '$username'");
+$userquery = $mysqli->query("SELECT DISTINCT projectId FROM customerp Where custName= '$username'");
 
 if($userquery==false)
 {
@@ -122,29 +122,28 @@ else
   while ($row = mysqli_fetch_row($userquery))
   {
     $projectid=(int)$row[0];
-    
-      $projectquery = $mysqli->query("SELECT * FROM projectlist Where completed=FALSE AND projectId= $projectid");
+ ;   
+      $projectquery = $mysqli->query("SELECT * FROM projectlist Where projectId = '$projectid' AND completed = FALSE");
       while($row1= mysqli_fetch_row($projectquery))
       {
+		 
         echo '
           <div class="col-sm-4" id="a">
             <div class="table-left wow fadeInUp" data-wow-delay="0.4s">
               <div class="pricing-details">
                 <h2 id="b">'.$row1[1].'</h2>           
                 <p id="c">'.$row1[2].'</p>
-        <form action="EditPage.php" method="post">
-        <input type="text" style="display:none" name="name" value="'.$projectid.'"><br>
-        <input class="btn btn-primary btn-action btn-fill" type="submit" value="EDIT">
-        </form>
-		<form action="DoneButton.php" method="post">
-        <input type="text" style="display:none" name="names" value="'.$projectid.'"><br>
-        <input class="btn btn-primary btn-action btn-fill" type="submit" value="Done">
-        </form>
+				<form action="ReadMoreDP1.php" method="post">
+				<input type="text" style="display:none" name="name" value="'.$projectid.'"><br>
+				<input style="color:green" class="btn " type="submit" value="ReadMore">
+				</form>				
+        
               </div>
             </div>
           </div>';
       }
-    
+	  
+	  
   }
 }
 

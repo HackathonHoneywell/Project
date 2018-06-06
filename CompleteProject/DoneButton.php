@@ -1,7 +1,6 @@
 <?php
 session_start();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,7 +50,7 @@ session_start();
       <ul style="float:right" class="nav navbar-nav">
         
         <li><a style="color:#0584C5">User Name</a></li>
-        <li><a href="http://localhost/completeproject/StartPage.php">Logout</a></li>
+        <li><a href="#">Logout</a></li>
       </ul>
     </div>
   </div>
@@ -66,11 +65,11 @@ session_start();
         <li><a href="http://localhost/completeproject/DoneProject.php">Done Projects</a></li>
     <li class="active"><a href="http://localhost/completeproject/MyProject.php">My Projects</a></li>
     <li><a href="http://localhost/completeproject/recommendation.php">Recommendatios</a></li>
-	<li><a href="http://localhost/completeproject/MyBackLiveProject.php">Backed Projects</a></li>
       </ul>
       <hr class="hidden-sm hidden-md hidden-lg">
     <h2>About Crowd Funding</h2>
-      
+      <h5>Image:</h5>
+      <div><img src="obama1.jpg" alt="Italian Trulli"></div>
       <p>Crowd Funding helps artists, techies, NGOS, and other creators find the resources and support they need to make their ideas a reality. To date, tens of thousands of creative projects — big and small — have come to life with the support of the Crowd Funding community.</p>
       <h3>Links</h3>
       <p>https://www.crowdfunding.com</p>
@@ -108,48 +107,21 @@ session_start();
         <div class="col-md-8 col-sm-8 nopadding">
     
 <?php
-$username=$_SESSION["users"];
-$mysqli = new mysqli("localhost", "root","","project");
+ $e=$_POST['names'];
+ 
+    $mysqli = new mysqli("localhost","root","","project");
 
-$userquery = $mysqli->query("SELECT projectId FROM createp Where createName= '$username'");
-
-if($userquery==false)
-{
-  echo "error occured";
+$sql1 = $mysqli->query("SELECT moneyFunded from projectlist WHERE projectId=".$e);
+while($row = mysqli_fetch_row($sql1))
+	
+{   echo '<pre><h3>Money '.$row[0]. ' is funded for the project</h3></pre>';
+	
 }
-else
-{
-  while ($row = mysqli_fetch_row($userquery))
-  {
-    $projectid=(int)$row[0];
-    
-      $projectquery = $mysqli->query("SELECT * FROM projectlist Where completed=FALSE AND projectId= $projectid");
-      while($row1= mysqli_fetch_row($projectquery))
-      {
-        echo '
-          <div class="col-sm-4" id="a">
-            <div class="table-left wow fadeInUp" data-wow-delay="0.4s">
-              <div class="pricing-details">
-                <h2 id="b">'.$row1[1].'</h2>           
-                <p id="c">'.$row1[2].'</p>
-        <form action="EditPage.php" method="post">
-        <input type="text" style="display:none" name="name" value="'.$projectid.'"><br>
-        <input class="btn btn-primary btn-action btn-fill" type="submit" value="EDIT">
-        </form>
-		<form action="DoneButton.php" method="post">
-        <input type="text" style="display:none" name="names" value="'.$projectid.'"><br>
-        <input class="btn btn-primary btn-action btn-fill" type="submit" value="Done">
-        </form>
-              </div>
-            </div>
-          </div>';
-      }
-    
-  }
-}
+ 
+ $sql= $mysqli->query("UPDATE projectlist SET completed=TRUE WHERE projectId=".$e);
+	mysqli_close($mysqli); 
+?>
 
-?>    
-    
       </div>
 
      </div>         
@@ -163,7 +135,7 @@ else
 </div>
 
 <div class="jumbotron text-center" style="margin-bottom:0">
-  <p>Thanks for visiting Crowd Funding</p>
+  <p>Footer</p>
 </div>
 
 </body>

@@ -62,11 +62,11 @@ session_start();
     <div class="col-sm-4">
       
       <ul class="nav nav-pills nav-stacked">
-        <li ><a href="http://localhost/completeproject/HomePage.php">Live Projects</a></li>
+        <li class="active"><a href="http://localhost/completeproject/HomePage.php">Live Projects</a></li>
         <li><a href="http://localhost/completeproject/DoneProject.php">Done Projects</a></li>
-    <li class="active"><a href="http://localhost/completeproject/MyProject.php">My Projects</a></li>
+        <li><a href="http://localhost/completeproject/MyProject.php">My Projects</a></li>
     <li><a href="http://localhost/completeproject/recommendation.php">Recommendatios</a></li>
-	<li><a href="http://localhost/completeproject/MyBackLiveProject.php">Backed Projects</a></li>
+	<li><a href="http://localhost/completeproject/MyBackLiveProject.php">Backed Project</a></li>
       </ul>
       <hr class="hidden-sm hidden-md hidden-lg">
     <h2>About Crowd Funding</h2>
@@ -76,89 +76,35 @@ session_start();
       <p>https://www.crowdfunding.com</p>
     </div>
     <!-- add your code here akshay-->
-  <div class="col-sm-8">
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
-      </button>
-     
-    </div>
-    <div style="postion:right">
-        
-      <ul class="nav navbar-nav">
-      <li><a style="color:white" href="MyProject.php" >LiveProject</a></li>
-        <li><a href="MyDoneProject.php">DoneProjects</a></li>
-    <li><a href="CreateProject.php">CreateProjects</a></li>
-      </ul>
-    </div>  
-  </div>
-</nav>
+  <?php
 
-  <div class="col-sm-8">
-    <div class="wrapper">
-  <div class="main app form" id="main"><!-- Main Section-->
-
-    <div id="pricing" class="pricing-section text-center">
-      <div class="container">
-    
-        <div class="col-md-8 col-sm-8 nopadding">
-    
-<?php
-$username=$_SESSION["users"];
 $mysqli = new mysqli("localhost", "root","","project");
+$projectId =(int) $_SESSION["projid"];
+//echo $projectId;
+$name=$_POST['firstname'];
+$amount=(int)$_POST['amount'];
 
-$userquery = $mysqli->query("SELECT projectId FROM createp Where createName= '$username'");
+$readproject= "UPDATE projectlist SET  moneyFunded=moneyFunded+'$amount'  WHERE projectId='$projectId'";
+$query3 = $mysqli->query($readproject);
 
-if($userquery==false)
+
+$checkquery="SELECT EXISTS (SELECT * FROM cutomerp WHERE projectId=$projectId AND custName='$name')";
+if(!$mysqli->query($checkquery))
 {
-  echo "error occured";
+	echo $mysqli->query($checkquery);
+$insertquery= "INSERT INTO customerp(projectId,custName,amountP) VALUES('$projectId' ,'$name','$amount')";
+$i=$mysqli->query($insertquery);
+echo $i;
+$query3 = $mysqli->query("UPDATE `projectlist` set `backers` = `backers`+1 where projectId= $projectId");
 }
 else
 {
-  while ($row = mysqli_fetch_row($userquery))
-  {
-    $projectid=(int)$row[0];
-    
-      $projectquery = $mysqli->query("SELECT * FROM projectlist Where completed=FALSE AND projectId= $projectid");
-      while($row1= mysqli_fetch_row($projectquery))
-      {
-        echo '
-          <div class="col-sm-4" id="a">
-            <div class="table-left wow fadeInUp" data-wow-delay="0.4s">
-              <div class="pricing-details">
-                <h2 id="b">'.$row1[1].'</h2>           
-                <p id="c">'.$row1[2].'</p>
-        <form action="EditPage.php" method="post">
-        <input type="text" style="display:none" name="name" value="'.$projectid.'"><br>
-        <input class="btn btn-primary btn-action btn-fill" type="submit" value="EDIT">
-        </form>
-		<form action="DoneButton.php" method="post">
-        <input type="text" style="display:none" name="names" value="'.$projectid.'"><br>
-        <input class="btn btn-primary btn-action btn-fill" type="submit" value="Done">
-        </form>
-              </div>
-            </div>
-          </div>';
-      }
-    
-  }
+	$update="UPDATE customerp SET amountP=amountP+'$amount' WHERE custName='$name' AND projectId='$projectId'";
 }
 
-?>    
-    
-      </div>
-
-     </div>         
-    </div>
-   </div>
-   
-  </div>
-  </div>
-  </div>
+mysqli_close($mysqli);
+ echo '<h3 style="color:green"> Funded successfully!!</h3>';
+ ?>
   </div>
 </div>
 

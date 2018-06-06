@@ -29,8 +29,8 @@
 <body>
 
 <div class="jumbotron text-center" style="margin-bottom:0;background-color:#0584C5;color:white;">
-  <h1>WEB_APP</h1>
-  <p>CAPTION</p> 
+  <h1>Crowd Funding</h1>
+  <p>A place to expand your project</p> 
 </div>
 
 <nav class="navbar navbar-inverse">
@@ -58,18 +58,18 @@
     <div class="col-sm-4">
       
       <ul class="nav nav-pills nav-stacked">
-        <li ><a href="#">Live Projects</a></li>
-        <li><a href="#">Done Projects</a></li>
+        <li ><a href="http://localhost/completeproject/HomePage.php">Live Projects</a></li>
+        <li><a href="http://localhost/completeproject/DoneProject.php">Done Projects</a></li>
 		<li class="active"><a href="http://localhost/completeproject/MyProject.php">My Projects</a></li>
-		<li><a href="#">Recommendatios</a></li>
+		<li><a href="http://localhost/completeproject/recommendation.php">Recommendatios</a></li>
       </ul>
       <hr class="hidden-sm hidden-md hidden-lg">
-	  <h2>About Me</h2>
-      <h5>Photo of me:</h5>
-      <div class="fakeimg">Fake Image</div>
-      <p>Some text about me in culpa qui officia deserunt mollit anim..</p>
-      <h3>Some Links</h3>
-      <p>Lorem ipsum dolor sit ame.</p>
+	  <h2>About Crowd Funding</h2>
+      <h5>Image:</h5>
+      <div><img src="obama1.jpg" alt="Italian Trulli"></div>
+      <p>Crowd Funding helps artists, techies, NGOS, and other creators find the resources and support they need to make their ideas a reality. To date, tens of thousands of creative projects — big and small — have come to life with the support of the Crowd Funding community.</p>
+      <h3>Links</h3>
+      <p>https://www.crowdfunding.com</p>
     </div>
     <!-- add your code here akshay-->
 	<div class="col-sm-8">
@@ -86,9 +86,9 @@
     <div style="postion:right">
         
       <ul class="nav navbar-nav">
-	    <li ><a href="http://localhost/completeproject/MyProject.php#">LiveProject</a></li>
-        <li><a href="http://localhost/completeproject/DoneProject.php#" >DoneProjects</a></li>
-		<li><a href="#">CreateProjects</a></li>
+	    <li ><a href="http://localhost/completeproject/MyProject.php">LiveProject</a></li>
+        <li><a href="http://localhost/completeproject/DoneProject.php" >DoneProjects</a></li>
+		<li><a href="http://localhost/completeproject/CreateProject.php">CreateProjects</a></li>
       </ul>
     </div>	
   </div>
@@ -106,31 +106,68 @@
 <?php
 $title=$_POST['title'];
 $description=$_POST['description'];
+$category=(int)$_POST['category'];
 
-$name=$_POST['name'];
+$fromdate=$_POST['fromdate'];
+$todate=$_POST['todate'];
+$requiredfunds=(int)$_POST['requiredfunds'];
+
+$phno=(int)$_POST['phno'];
 $emailid=$_POST['emailid'];
-$contact=$name.",".$emailid;
 
-$stage1=$_POST['stage1from'].",".$_POST['stage1to'].",".$_POST['stage1cost'];
-$stage2=$_POST['stage2from'].",".$_POST['stage2to'].",".$_POST['stage2cost'];
-$stage3=$_POST['stage3from'].",".$_POST['stage3to'].",".$_POST['stage3cost'];
-$stage4=$_POST['stage4from'].",".$_POST['stage4to'].",".$_POST['stage4cost'];
+$fund1=(int)$_POST['fund1'];
+$reward11=$_POST['reward11'];
+$reward12=$_POST['reward12'];
 
-$funding=$_POST['accnumber'].",".$_POST['accname'].",".$_POST['acccode'];
+$fund2=(int)$_POST['fund2'];
+$reward21=$_POST['reward21'];
+$reward22=$_POST['reward22'];
 
-$projectid=(int)$_POST['projectid'];
+$fund3=(int)$_POST['fund3'];
+$reward31=$_POST['reward31'];
+$reward32=$_POST['reward32'];
 
-$mysqli = new mysqli("localhost", "root","","myproject");
-$sql="UPDATE projectslist SET projectName='$title' , description='$description', contactInfo='.$contact.' , fundingDetails='.$funding.' WHERE projectId=".$projectid;
-if($mysqli->query($sql)==true)
+$fund4=(int)$_POST['fund4'];
+$reward41=$_POST['reward41'];
+$reward42=$_POST['reward42'];
+
+$accnumber=(int)$_POST['accnumber'];
+$accname=$_POST['accname'];
+$acccode=$_POST['ifsccode'];
+
+//update queries
+$mysqli = new mysqli("localhost", "root","","project");
+$updateprojectquery="UPDATE projectlist SET projectName='$title'  WHERE projectId=2";//,description='$description',fromD='$fromdate',toD='$todate',amountN='$requiredfunds',category='$category',phoneNo='$phno',email='$emailid' WHERE projectId=2";
+if($mysqli->query($updateprojectquery )==true)
 {
+
 }
-$sql="UPDATE statusreport SET stage1='$stage1' ,stage2='$stage2' , stage3='$stage3',stage4='$stage4'  WHERE projectId=".$projectid;
-if($mysqli->query($sql)==true)
+else
 {
+	
 }
 
 
+$insertaccountdetails="UPDATE account SET cardHolderName='$accname',accountNo='$accnumber',IFSC='$acccode' WHERE projectId=2";
+if($mysqli->query($insertaccountdetails )==true)
+{
+
+}
+else
+{
+	
+}
+
+
+$insertrewards="UPDATE rewards SET fund1='$fund1',reward11='$reward11',reward12='$reward12',fund2='$fund2',reward21='$reward21',reward22='$reward22',fund3='$fund3',reward31='$reward31',reward32='$reward32',fund4='$fund4',reward41='$reward41',reward42='$reward42' WHERE projectId=2";
+if($mysqli->query($insertrewards )==true)
+{
+	
+}
+else
+{
+	
+}
 ?>
 
 <h1 style="color:MediumSeaGreen;" >EDITED SUCCESSFULLY</h1>		
