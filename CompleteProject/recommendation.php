@@ -1,6 +1,8 @@
 <?php
 session_start();
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -64,92 +66,163 @@ session_start();
       <ul class="nav nav-pills nav-stacked">
         <li ><a href="http://localhost/completeproject/HomePage.php">Live Projects</a></li>
         <li><a href="http://localhost/completeproject/DoneProject.php">Done Projects</a></li>
-    <li class="active"><a href="http://localhost/completeproject/MyProject.php">My Projects</a></li>
-    <li><a href="http://localhost/completeproject/recommendation.php">Recommendatios</a></li>
-	<li><a href="http://localhost/completeproject/MyBackLiveProject.php">Backed Projects</a></li>
+		<li ><a href="http://localhost/completeproject/MyProject.php">My Projects</a></li>
+		<li class="active"><a href="http://localhost/completeproject/recommendation.php">Recommendatios</a></li>
+		<li><a href="http://localhost/completeproject/MyBackLiveProject.php">Backed Projects</a></li>
       </ul>
       <hr class="hidden-sm hidden-md hidden-lg">
-    <h2>About Crowd Funding</h2>
+	  <h2>About Crowd Funding</h2>
       
       <p>Crowd Funding helps artists, techies, NGOS, and other creators find the resources and support they need to make their ideas a reality. To date, tens of thousands of creative projects — big and small — have come to life with the support of the Crowd Funding community.</p>
       <h3>Links</h3>
       <p>https://www.crowdfunding.com</p>
     </div>
     <!-- add your code here akshay-->
-  <div class="col-sm-8">
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
-      </button>
-     
-    </div>
-    <div style="postion:right">
-        
-      <ul class="nav navbar-nav">
-      <li><a style="color:white" href="MyProject.php" >LiveProject</a></li>
-        <li><a href="MyDoneProject.php">DoneProjects</a></li>
-    <li><a href="CreateProject.php">CreateProjects</a></li>
-      </ul>
-    </div>  
-  </div>
-</nav>
+	<div class="col-sm-8">
 
-  <div class="col-sm-8">
-    <div class="wrapper">
+
+	<div class="col-sm-8">
+		<div class="wrapper">
   <div class="main app form" id="main"><!-- Main Section-->
 
     <div id="pricing" class="pricing-section text-center">
       <div class="container">
-    
+	  
         <div class="col-md-8 col-sm-8 nopadding">
-    
+
+
+
+
+
 <?php
+
 $username=$_SESSION["users"];
+//echo $_SESSION["users1"];
+$mysqli = new mysqli("localhost", "root","","project");
+
+
+$userquery = $mysqli->query("SELECT projectId FROM customerp Where custName= '$username'");
+
+$similarProjects=array();
+
+	while ($row = mysqli_fetch_row($userquery))
+	{
+		$projectid=(int)$row[0];
+		
+		$recommendationquery=$mysqli->query("SELECT * FROM recommendation Where sourceid= '$projectid'");
+		
+			while($row1 = mysqli_fetch_row($recommendationquery))
+			{
+				//echo $row1[0].' '.$row1[1].' '.$row1[2]."\n";
+				if(!isset($similarProjects[$row1[1]]))
+				{
+					$similarProjects[$row1[1]]=$row1[2];
+				}
+				else
+				{
+					$similarProjects[$row1[1]]=$similarProjects[$row1[1]]+$row1[2];
+				}
+			}
+		
+	}
+	arsort($similarProjects);
+	
+	//echo '<h3 style="color:#0584C5">Live Projects</h3>';
+	foreach($similarProjects as $id => $cost)
+	{
+		//echo $id.':'.$cost."\n";
+        	$projectquery = $mysqli->query("SELECT * FROM projectlist Where completed=FALSE AND projectId= $id");
+			while($row2= mysqli_fetch_row($projectquery))
+			{
+				echo '
+          <div class="col-sm-4" id="a">
+            <div class="table-left wow fadeInUp" data-wow-delay="0.4s">
+              <div class="pricing-details">
+                <h2 id="b">'.$row2[1].'</h2>           
+                <p id="c">'.$row2[2].'</p>
+				<form action="ReadMore.php" method="post">
+				<input type="text" style="display:none" name="name" value="'.$id.'"><br>
+				<input style="color:green" class="btn " type="submit" value="ReadMore">
+				</form>
+              </div>
+            </div>
+          </div>';
+			}
+
+	}
+
+	//echo '<br>';
+	//echo '<h3 style="color:#0584C5">Done Projects</h3>';
+	foreach($similarProjects as $id => $cost)
+	{
+		//echo $id.':'.$cost."\n";
+        	$projectquery = $mysqli->query("SELECT * FROM projectlist Where completed=TRUE AND projectId= $id");
+			while($row2= mysqli_fetch_row($projectquery))
+			{
+				echo '
+          <div class="col-sm-4" id="a">
+            <div class="table-left wow fadeInUp" data-wow-delay="0.4s">
+              <div class="pricing-details">
+                <h2 id="b">'.$row2[1].'</h2>           
+                <p id="c">'.$row2[2].'</p>
+				<form action="ReadMoreDP1.php" method="post">
+				<input type="text" style="display:none" name="name" value="'.$id.'"><br>
+				<input style="color:RED" class="btn " type="submit" value="ReadMore">
+				</form>
+              </div>
+            </div>
+          </div>';
+			}
+
+	}
+
+
+
+
+
+
+
+
+
+
+/*
 $mysqli = new mysqli("localhost", "root","","project");
 
 $userquery = $mysqli->query("SELECT projectId FROM createp Where createName= '$username'");
 
 if($userquery==false)
 {
-  echo "error occured";
+	echo "error occured";
 }
 else
 {
-  while ($row = mysqli_fetch_row($userquery))
-  {
-    $projectid=(int)$row[0];
-    
-      $projectquery = $mysqli->query("SELECT * FROM projectlist Where completed=FALSE AND projectId= $projectid");
-      while($row1= mysqli_fetch_row($projectquery))
-      {
-        echo '
+	while ($row = mysqli_fetch_row($userquery))
+	{
+		$projectid=(int)$row[0];
+		
+			$projectquery = $mysqli->query("SELECT * FROM projectlist Where completed=TRUE AND projectId= $projectid");
+			while($row1= mysqli_fetch_row($projectquery))
+			{
+				echo '
           <div class="col-sm-4" id="a">
             <div class="table-left wow fadeInUp" data-wow-delay="0.4s">
               <div class="pricing-details">
                 <h2 id="b">'.$row1[1].'</h2>           
                 <p id="c">'.$row1[2].'</p>
-        <form action="EditPage.php" method="post">
-        <input type="text" style="display:none" name="name" value="'.$projectid.'"><br>
-        <input class="btn btn-primary btn-action btn-fill" type="submit" value="EDIT">
-        </form>
-		<form action="DoneButton.php" method="post">
-        <input type="text" style="display:none" name="names" value="'.$projectid.'"><br>
-        <input class="btn btn-primary btn-action btn-fill" type="submit" value="Done">
-        </form>
+				<form action="ReadMore.php" method="post">
+				<input type="text" style="display:none" name="name" value="'.$projectid.'"><br>
+				<input class="btn btn-primary btn-action btn-fill" type="submit" value="ReadMore">
+				</form>
               </div>
             </div>
           </div>';
-      }
-    
-  }
-}
+			}
+		
+	}
+}*/
 
-?>    
-    
+?>		
+		
       </div>
 
      </div>         
@@ -167,4 +240,4 @@ else
 </div>
 
 </body>
-</html>
+</html>     

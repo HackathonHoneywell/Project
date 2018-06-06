@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +35,7 @@
 
 <div class="jumbotron text-center" style="margin-bottom:0;background-color:#0584C5;color:white;">
   <h1><i>Crowd Funding</i></h1>
-  <p>A place for startups</p> 
+  <p>A place to expand your project</p> 
 </div>
 
 <nav class="navbar navbar-inverse">
@@ -48,7 +52,7 @@
       <ul style="float:right" class="nav navbar-nav">
         
         <li><a href="#">User Name</a></li>
-        <li><a href="#">Logout</a></li>
+        <li><a href="http://localhost/completeproject/StartPage.php">Logout</a></li>
       </ul>
     </div>
   </div>
@@ -59,64 +63,66 @@
     <div class="col-sm-4">
       
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="first.html">Live Projects</a></li>
-        <li class="active"><a href="http://localhost/completeproject/DoneProject.php#">Done Projects</a></li>
-        <li><a href="http://localhost/completeproject/MyProject.php#">My Projects</a></li>
-		<li><a href="#">Recommendatios</a></li>
+        <li><a href="http://localhost/completeproject/HomePage.php">Live Projects</a></li>
+        <li class="active"><a href="http://localhost/completeproject/DoneProject.php">Done Projects</a></li>
+        <li><a href="http://localhost/completeproject/MyProject.php">My Projects</a></li>
+    <li><a href="http://localhost/completeproject/recommendation.php">Recommendatios</a></li>
+	<li><a href="http://localhost/completeproject/MyBackLiveProject.php">Backed Project</a></li>
       </ul>
       <hr class="hidden-sm hidden-md hidden-lg">
-	  <h2>About Crowd Funding</h2>
-      <h5>Image:</h5>
-      <div class="fakeimg">Fake Image</div>
-      <p>Some text about me in culpa qui officia deserunt mollit anim..</p>
-      <h3>Some Links</h3>
-      <p>Lorem ipsum dolor sit ame.</p>
+    <h2>About Crowd Funding</h2>
+      <p>Crowd Funding helps artists, techies, NGOS, and other creators find the resources and support they need to make their ideas a reality. To date, tens of thousands of creative projects — big and small — have come to life with the support of the Crowd Funding community.</p>
+      <h3>Links</h3>
+      <p>https://www.crowdfunding.com</p>
     </div>
     <!-- add your code here akshay-->
-	
-		
+  
+    
   <!-- Main Section-->
 
     
       
-	  <?php
-    session_start();
-$mysqli = new mysqli("localhost", "root","","doneproject");
+    <?php
+   
+$mysqli = new mysqli("localhost", "root","","project");
 
-$query3 = $mysqli->query("Select * from projectlist");
-	while ($row = mysqli_fetch_row($query3))
-	{
-		$str = $row[2];
-		$substr =  substr($str, 0,30); 
-		$substr = $substr.".....";
-		
-			echo '<div class="col-sm-8"><div class="wrapper"><div class="main app form" id="main"><div id="pricing" class="pricing-section text-center"><div class="container"><div class="col-md-8 col-sm-8 nopadding"><div class="col-sm-4"><div class="table-left wow fadeInUp" data-wow-delay="0.4s"><div class="pricing-details"><h2>'.$row[1].'</h2><p>'.$substr.'</p>
-			
-			
-			
-				<form action="readmore.php" method="post">
-				<input type="text" style="display:none" name="name" value="'.$row[0].'"><br>
-				<input class="btn btn-primary btn-action btn-fill" type="submit" value="ReadMore">
-				</form>			</div></div></div>';
-			
-		$_SESSION['var']=$row[0];
-	}
-	
-	
+$query3 = $mysqli->query("SELECT * from projectlist WHERE completed = TRUE ORDER BY likes DESC");
+  while ($row = mysqli_fetch_row($query3))
+  {
+	  $str1 =$row[1];
+	  $substr1 = substr($str1, 0,15); 
+	   $substr1 = $substr1.".....";
+    $str = $row[2];
+    $substr =  substr($str, 0,30); 
+    $substr = $substr.".....";
+    
+      echo '<div class="col-sm-8"><div class="wrapper"><div class="main app form" id="main"><div id="pricing" class="pricing-section text-center"><div class="container"><div class="col-md-8 col-sm-8 nopadding"><div class="col-sm-4"><div class="table-left wow fadeInUp" data-wow-delay="0.4s"><div class="pricing-details"><h2>'.$substr1.'</h2><p>'.$substr.'</p>
+      
+      
+      
+        <form action="http://localhost/CompleteProject/ReadMore.php" method="post">
+        <input type="text" style="display:none" name="name" value="'.$row[0].'"><br>
+        <input class="btn btn-primary btn-action btn-fill" type="submit" value="ReadMore">
+        </form>     </div></div></div>';
+      
+    $_SESSION['var']=$row[0];
+  }
+  
+  
 
 mysqli_close($mysqli);
-	
+  
 
 ?>
-	  
+    
         
-		
+    
           
     <script>
-	function fun(){
-		window.location = 'http://localhost/CompleteProject/ReadMore.php';
-	}
-</script>	
+  function fun(){
+    window.location = 'http://localhost/CompleteProject/ReadMore.php';
+  }
+</script> 
               
                       
                 
@@ -124,10 +130,10 @@ mysqli_close($mysqli);
               
            
           
-		  
+      
 
-		 		
-		
+        
+    
       </div>
 
      </div>         

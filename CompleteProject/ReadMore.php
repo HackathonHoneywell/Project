@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,10 +12,12 @@
 <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all" />
 <link href="https://fonts.googleapis.com/css?family=Open%20Sans:300,400,500,600,700" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="css/animate.css">
+
 <!-- Resource style -->
 <link rel="stylesheet" href="css/owl.carousel.css">
 <link rel="stylesheet" href="css/owl.theme.css">
 <link rel="stylesheet" href="css/ionicons.min.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <!-- Resource style -->
 <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
   <title>Read more</title>
@@ -25,6 +31,13 @@
       height: 200px;
       background: #aaa;
   }
+#rcorners1 {
+    border-radius: 20px;
+    background: #0584C5;
+    padding: 10px; 
+    width: 800px;
+    height: 50px;    
+}
   </style>
 </head>
 <body>
@@ -48,7 +61,7 @@
       <ul style="float:right" class="nav navbar-nav">
         
         <li><a href="#">User Name</a></li>
-        <li><a href="#">Logout</a></li>
+        <li><a href="http://localhost/completeproject/StartPage.php">Logout</a></li>
       </ul>
     </div>
   </div>
@@ -59,18 +72,18 @@
     <div class="col-sm-4">
       
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="first.html">Live Projects</a></li>
+        <li><a href="http://localhost/completeproject/HomePage.php">Live Projects</a></li>
         <li class="active"><a href="http://localhost/completeproject/DoneProject.php">Done Projects</a></li>
-        <li><a href="http://localhost/completeproject/MyProject.php#">My Projects</a></li>
-		<li><a href="#">Recommendatios</a></li>
+        <li><a href="http://localhost/completeproject/MyProject.php">My Projects</a></li>
+		<li><a href="http://localhost/completeproject/recommendation.php">Recommendatios</a></li>
+		<li><a href="http://localhost/completeproject/MyBackLiveProject.php">Backed Project</a></li>
       </ul>
       <hr class="hidden-sm hidden-md hidden-lg">
 	  <h2>About Crowd Funding</h2>
-      <h5>Images:</h5>
-      <div class="fakeimg">Fake Image</div>
-      <p>Some text about me in culpa qui officia deserunt mollit anim..</p>
-      <h3>Some Links</h3>
-      <p>Lorem ipsum dolor sit ame.</p>
+      
+      <p>Crowd Funding helps artists, techies, NGOS, and other creators find the resources and support they need to make their ideas a reality. To date, tens of thousands of creative projects — big and small — have come to life with the support of the Crowd Funding community.</p>
+      <h3>Links</h3>
+      <p>https://www.crowdfunding.com</p>
     </div>
     <!-- add your code here akshay-->
 	<div class="col-sm-8">
@@ -80,29 +93,36 @@
     <?php
 	
  $x=$_POST['name'];
-$mysqli = new mysqli("localhost", "root","","doneproject");
-$query3 = $mysqli->query("SELECT * from projectlist where projectId=$x");
+$mysqli = new mysqli("localhost", "root","","project");
+$query3 = $mysqli->query("SELECT * from projectlist where completed = TRUE AND projectId=$x");
+$query4 = $mysqli->query("SELECT projectName from projectlist");//where 'category'=" should be added
 	while ($row = mysqli_fetch_row($query3))
 	{
-    $strDt = $row[5];
-    $exEndDt = $row[6];
-    $endDt = $row[7];
-		//$totDays = date_diff($strDt,$exEndDt);
-		//$comDays = date_diff($strDt,$endDt);
-		//$sucPer = ($totDays/$comDays)*100;
-		echo '<h5>'.$row[1].'</h5>';
-		echo '<h6>Description:</h6>';
-		echo '<h7>'.$row[2].'</h7>';
-		echo '<h6>Recognition:</h6>';
-		//echo '<h3>Success percentage:'.$sucPer.'</h3>';
-		echo '<h7>Likes:'.$row[4].'</h7>';
-		echo '<h6>Contact Information:</h6>';
-		echo '<h7>name:'.$row[3].'</h7>';
-		echo '<h7>ID:'.$row[3].'</h7>';
-		echo '<h7>e-mail:'.$row[3].'</h7>';
-		echo '<h6>Willing to buy?</h6>';
-		echo '<h7>link:'.$row[5].'</h7>';
+   $strDt = date_create($row[3]);
+    $exEndDt = date_create($row[4]);
+    $endDt = date_create($row[14]);
+    $diff = date_diff($strDt,$exEndDt);
+    $totDays = $diff->format("%a days");
+    $diff1 = date_diff($strDt,$endDt);
+    $comDays = $diff1->format("%a days");
+    $sucPer = ($totDays/$comDays)*100;
+	$strat = substr($sucPer,0,5);
+		echo '<h3 style="border-radius: 20px; background: #0584C5;padding: 15px;width: 250px;height: 70px;      color:white;font-size:28px">   '.$row[1].'</h3>';
+		echo '<h3 id="rcorners1" style="color:white;font-size:23px">Description:</h3>';
+		echo '<h3>'.$row[2].'</h3>';
+		echo '<h3 id="rcorners1" style="color:white;font-size:23px">Recognition:</h3>';
+		echo '<h3 style="color:green">Success percentage:'.$strat.'</h3>';
+    echo '<h3>No. of backers:'.$row[10].'</h3>';//should be edited
+		echo '<h3>Likes:'.$row[5].'</h3>';
+		echo '<h3>Total amount funded:'.$row[6].'</h3>';
+	
+		echo '<h3 id="rcorners1" style="color:white;font-size:23px">Contact Information:</h3>';
+		echo '<h3>ID:'.$row[0].'</h3>';
+		echo '<h3>e-mail:'.$row[12].'</h3>';
+		echo '<h3 id="rcorners1" style="color:white;font-size:23px">Willing to buy?</h3>';
+		echo '<h3>link:<a href='.$row[13].'>'.$row[13].'</a></h3>';
 	}
+ 
 	
 
 mysqli_close($mysqli);
@@ -117,7 +137,7 @@ mysqli_close($mysqli);
 </div>
 
 <div class="jumbotron text-center" style="margin-bottom:0">
-  <p>Footer</p>
+  <p>Thanks for visiting Crowd Funding</p>
 </div>
 
 </body>

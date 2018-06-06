@@ -29,8 +29,8 @@
 <body>
 
 <div class="jumbotron text-center" style="margin-bottom:0;background-color:#0584C5;color:white;">
-  <h1>WEB_APP</h1>
-  <p>CAPTION</p> 
+  <h1>Crowd Funding</h1>
+  <p>A place to expand your project</p> 
 </div>
 
 <nav class="navbar navbar-inverse">
@@ -58,18 +58,18 @@
     <div class="col-sm-4">
       
       <ul class="nav nav-pills nav-stacked">
-        <li style="color:white" ><a href="#">Live Projects</a></li>
-        <li><a href="#">Done Projects</a></li>
+        <li style="color:white" ><a href="http://localhost/completeproject/HomePage.php">Live Projects</a></li>
+        <li><a href="http://localhost/completeproject/DoneProject.php">Done Projects</a></li>
 		<li class="active"><a href="http://localhost/myproject/MyProject.php">My Projects</a></li>
-		<li><a href="#">Recommendatios</a></li>
+		<li><a href="http://localhost/completeproject/recommendation.php">Recommendatios</a></li>
       </ul>
       <hr class="hidden-sm hidden-md hidden-lg">
-	  <h2>About Me</h2>
-      <h5>Photo of me:</h5>
-      <div class="fakeimg">Fake Image</div>
-      <p>Some text about me in culpa qui officia deserunt mollit anim..</p>
-      <h3>Some Links</h3>
-      <p>Lorem ipsum dolor sit ame.</p>
+	  <h2>About Crowd Funding</h2>
+      <h5>Image:</h5>
+      <div><img src="obama1.jpg" alt="Italian Trulli"></div>
+      <p>Crowd Funding helps artists, techies, NGOS, and other creators find the resources and support they need to make their ideas a reality. To date, tens of thousands of creative projects — big and small — have come to life with the support of the Crowd Funding community.</p>
+      <h3>Links</h3>
+      <p>https://www.crowdfunding.com</p>
     </div>
     <!-- add your code here akshay-->
 	<div class="col-sm-8">
@@ -88,7 +88,7 @@
       <ul class="nav navbar-nav">
 	    <li><a href="http://localhost/myproject/MyProject.php">LiveProject</a></li>
         <li><a href="#" onclick="doneproject()">DoneProjects</a></li>
-		<li><a href="#">CreateProjects</a></li>
+		<li><a href="http://localhost/myproject/CreateProject.php">CreateProjects</a></li>
       </ul>
     </div>	
   </div>
@@ -102,225 +102,69 @@
       <div class="container">
 	  
         <div class="col-md-8 col-sm-8 nopadding">
+		<link rel="stylesheet" href="trr.css">
 <?php
 
-$user=1;
-$mysqli = new mysqli("localhost", "root","","myproject");
-
-$userquery = $mysqli->query("SELECT projectId FROM userslist Where userId=1");
-
-if($userquery==false)
-{
-	echo "error occured";
-}
-else
-{
-	    //$row = mysqli_fetch_row($userquery);
-		$projectid=$_POST['name'];
-		$projectquery = $mysqli->query("SELECT * FROM projectslist Where projectId= $projectid");
+$mysqli = new mysqli("localhost", "root","","project");
+		$projectid=(int)$_POST['name'];
+		echo $projectid;
+		$projectquery = $mysqli->query("SELECT * FROM projectlist Where projectId= '$projectid'");
 		$row1= mysqli_fetch_row($projectquery);
 		
-		//splitting the contact details
-		$contactinfo=explode(",",$row1[3]);
-		$name=$contactinfo[0];
-		$emailid=$contactinfo[1];
-		$contact=$name.$emailid;
+		$accountquery = $mysqli->query("SELECT * FROM account Where projectId= '$projectid'");
+		$row2= mysqli_fetch_row($accountquery);
 
-		//splitting funding details
-		$fundingdetails=explode(",",$row1[5]);
-		$accnumber=$fundingdetails[0];
-		$accname=$fundingdetails[1];
-		$acccode=$fundingdetails[2];
-		$funding=$accnumber.$accname.$acccode;
+		$accountquery = $mysqli->query("SELECT * FROM account Where projectId= '$projectid'");
+		$row2= mysqli_fetch_row($accountquery);
+
+		$rewardquery = $mysqli->query("SELECT * FROM rewards Where projectId= '$projectid'");
+		$row3= mysqli_fetch_row($rewardquery);
 		
-		$statusquery = $mysqli->query("SELECT * FROM statusreport Where projectId= $projectid");
-		$row2= mysqli_fetch_row($statusquery);
+				echo '<div class="section-form">
+    <form method="post" action="http://localhost/completeproject/EditPageSuccess.php">
+        <div class="intro">
+            <h2>New Project</h2>
+        </div>
+		<input type="text" value="'.$row1[1].'" placeholder="Title" name="title"  tabindex="1" />
+		<textarea placeholder="Description" name="description" tabindex="5" rows="10" value="'.$row1[2].'">'.$row1[2].'</textarea>
+		<input type="text" value="'.$row1[9].'" placeholder="category" name="category" tabindex="1" />
+					
+		<input type="text" value="'.$row1[3].'" placeholder="FromDate" name="fromdate" tabindex="3" />
+		<input type="text" value="'.$row1[4].'" placeholder="ToDate" name="todate" tabindex="2" />		
+		<input type="text" value="'.$row1[7].'" placeholder="Required Funds" name="requiredfunds" tabindex="2" />		
 		
-		//splitting the stage 1
-		$stage1=explode(",",$row2[1]);
-		$stage1from=$stage1[0];
-		$stage1to=$stage1[1];
-		$stage1cost=$stage1[2];
-		$stage11=$stage1from.$stage1to.$stage1cost;
+		<input type="text" value="'.$row1[11].'" placeholder="Phone number" name="phno" tabindex="3" />
+		<input type="text" value="'.$row1[12].'" placeholder="EmailId" name="emailid" tabindex="2" />					
 		
-		//splitting the stage 2
-		$stage2=explode(",",$row2[2]);
-		$stage2from=$stage2[0];
-		$stage2to=$stage2[1];
-		$stage2cost=$stage2[2];
-        $stage22=$stage2from.$stage2to.$stage2cost;
+		<h1>Funding Option 1</h1>
+		<input type="text" value="'.$row3[1].'" placeholder="Fund" name="fund1" tabindex="3" />
+		<input type="text" value="'.$row3[2].'" placeholder="Reward1" name="reward11" tabindex="2" />		
+		<input type="text" value="'.$row3[3].'" placeholder="Reward2" name="reward12" tabindex="2" />		
+
+		<h1>Funding Option 2</h1>
+		<input type="text" value="'.$row3[4].'" placeholder="Fund" name="fund2" tabindex="3" />
+		<input type="text" value="'.$row3[5].'" placeholder="Reward1" name="reward21" tabindex="2" />		
+		<input type="text" value="'.$row3[6].'" placeholder="Reward2" name="reward22" tabindex="2" />		
+
+		<h1>Funding Option 3</h1>
+		<input type="text" value="'.$row3[7].'" placeholder="Fund" name="fund3" tabindex="3" />
+		<input type="text" value="'.$row3[8].'" placeholder="Reward1" name="reward31" tabindex="2" />		
+		<input type="text" value="'.$row3[9].'" placeholder="Reward2" name="reward32" tabindex="2" />		
+
+		<h1>Funding Option 4</h1>
+		<input type="text" value="'.$row3[10].'" placeholder="Fund" name="fund4" tabindex="3" />
+		<input type="text" value="'.$row3[11].'" placeholder="Reward1" name="reward41" tabindex="2" />		
+		<input type="text" value="'.$row3[12].'" placeholder="Reward2" name="reward42" tabindex="2" />	
+
+		<h1>Funding Account Details</h1>
+		<input type="text" value="'.$row2[1].'" placeholder="Account Number" name="accnumber" tabindex="3" />
+		<input type="text" value="'.$row2[0].'" placeholder="Account Holder name" name="accname" tabindex="2" />		
+		<input type="text" value="'.$row2[2].'" placeholder="IFSC Code" name="ifsccode" tabindex="2" />			
 		
-		//splitting the stage 3
-		$stage3=explode(",",$row2[3]);
-		$stage3from=$stage3[0];
-		$stage3to=$stage3[1];
-		$stage3cost=$stage3[2];
-		$stage33=$stage3from.$stage3to.$stage3cost;
-		
-		//splitting the stage 4
-		$stage4=explode(",",$row2[4]);
-		$stage4from=$stage4[0];
-		$stage4to=$stage4[1];
-		$stage4cost=$stage4[2];		
-		$stage44=$stage4from.$stage4to.$stage4cost;
-		
-				echo 	'<form action="EditPageSuccess.php" method="POST">
-	<table style="width:80%">
-	<tr>
-		<th><h4>Title       :</h4></th>
-		<td>
-		<input type="text" name="title" value="'.$row1[1].'" cols="10" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-	    </td>
-    </tr>
-	<hr>
-	<tr>
-		<th><h4>Description:</h4></th>
-		<td>
-		<br>
-		<input type="text" name="description" value="'.$row1[2].'" cols="50" rows="10" style="border-top:3px double #1FA1E3;">
-			</input>
-	    </td>
-    </tr>
-	<tr>
-		<th><h4>Images:</h4></th>
-		<td>
-		
-			<button>UPLOAD</button>
-	    </td>
-    </tr>	
-		<tr>
-		<th><h4>ContactInfo:</h4></th>
-		<td>
-		<br>
-			<table style="100%">
-				<tr>
-					<th><h5>Name:</h5></th>
-					<td>
-						<input type="text" name="name" value="'.$name.'" cols="10" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-					</td>
-				</tr>
-				<tr>
-					<th><h5>EmailID:</h5></th>
-					<td>
-						<input type="text" name="emailid" value="'.$emailid.'"cols="10" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-					</td>
-				</tr>				
-			</table>
-	    </td>
-    </tr>	
-			
-		<tr>
-		<th><h4>StatusReport:</h4></th>
-		<td>
-		<br>
-			<table style="100%">
-				<tr>
-					<th><h6> </h6></th>
-					<th><h5>FROM</h5></th>
-					<th><h5>TO</h5></th>
-					<th><h5>COST</h5></th>
-				</tr>
-				<tr>
-					<th><h5>stage1:</h5></th>
-					<td>
-						<input type="text" name="stage1from" value="'.$stage1from.'" cols="5" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-					</td>
-					<td>
-						<input type="text" name="stage1to" value="'.$stage1to.'" cols="5" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-					</td>					
-					<td>
-						<input type="text" name="stage1cost" value="'.$stage1cost.'" cols="5" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-					</td>					
-				</tr>	
-				<tr>
-					<th><h5>stage2:</h5></th>
-					<td>
-						<input type="text" name="stage2from" value="'.$stage2from.'" cols="5" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-					</td>
-					<td>
-						<input type="text" name="stage2to" value="'.$stage2to.'" cols="5" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-					</td>					
-					<td>
-						<input type="text" name="stage2cost" value="'.$stage2cost.'" cols="5" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-					</td>					
-				</tr>
-				<tr>
-					<th><h5>stage3:</h5></th>
-					<td>
-						<input type="text" name="stage3from"  value="'.$stage3from.'" cols="5" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-					</td>
-					<td>
-						<input type="text" name="stage3to"  value="'.$stage3to.'" cols="5" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-					</td>					
-					<td>
-						<input type="text" name="stage3cost"  value="'.$stage3cost.'" cols="5" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-					</td>					
-				</tr>	
-				<tr>
-					<th><h5>stage4:</h5></th>
-					<td>
-						<input type="text" name="stage4from"  value="'.$stage4from.'" cols="5" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-					</td>
-					<td>
-						<input type="text" name="stage4to" value="'.$stage4to.'" cols="5" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-					</td>					
-					<td>
-						<input type="text" name="stage4cost" value="'.$stage4cost.'" cols="5" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-					</td>					
-				</tr>									
-			</table>
-	    </td>
-    </tr>
-		<tr>
-		<th><h4>FundingDetails:</h4></th>
-		<td>
-		<br>
-			<table style="100%">
-				<tr>
-					<th><h5>AccountNumber:</h5></th>
-					<td>
-						<input type="text" name="accnumber" value="'.$accnumber.'" cols="5" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-					</td>					
-				</tr>
-				<tr>
-					<th><h5>AccountHolderName:</h5></th>
-					<td>
-						<input type="text" name="accname" value="'.$accname.'" cols="5" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-					</td>					
-				</tr>
-				<tr>
-					<th><h5>IFSC-Code:</h5></th>
-					<td>
-						<input type="text" name="acccode" value="'.$acccode.'" cols="5" rows="2" style="border-top:3px double #1FA1E3;">
-						</input>
-					</td>					
-				</tr>								
-			</table>
-	    </td>
-    </tr>	
-    </table>
-	<input type="text" style="display:none" name="projectid" value="'.$projectid.'"><br>
-	<input type="submit" />
-	</form>';
+		<input type="submit" value="SUMBIT" tabindex="6" /></form>
+</div>';
 	$mysqli->close();
-}
+
 ?>		
 		
       </div>
