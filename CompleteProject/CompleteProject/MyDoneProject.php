@@ -1,3 +1,8 @@
+<?php
+session_start();
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,8 +34,8 @@
 <body>
 
 <div class="jumbotron text-center" style="margin-bottom:0;background-color:#0584C5;color:white;">
-  <h1>WEB_APP</h1>
-  <p>CAPTION</p> 
+  <h1>Crowd Funding</h1>
+  <p>A place to expand your project</p> 
 </div>
 
 <nav class="navbar navbar-inverse">
@@ -47,7 +52,7 @@
       <ul style="float:right" class="nav navbar-nav">
         
         <li><a style="color:#0584C5">User Name</a></li>
-        <li><a href="#">Logout</a></li>
+        <li><a href="http://localhost/completeproject/StartPage.php">Logout</a></li>
       </ul>
     </div>
   </div>
@@ -58,18 +63,18 @@
     <div class="col-sm-4">
       
       <ul class="nav nav-pills nav-stacked">
-        <li ><a href="#">Live Projects</a></li>
-        <li><a href="#">Done Projects</a></li>
+        <li ><a href="http://localhost/completeproject/HomePage.php">Live Projects</a></li>
+        <li><a href="http://localhost/completeproject/DoneProject.php">Done Projects</a></li>
 		<li class="active"><a href="http://localhost/completeproject/MyProject.php">My Projects</a></li>
-		<li><a href="#">Recommendatios</a></li>
+		<li><a href="http://localhost/completeproject/recommendation.php">Recommendatios</a></li>
+		 <li ><a href="http://localhost/completeproject/MyBackLiveProject.php">Backed Project</a></li>
       </ul>
       <hr class="hidden-sm hidden-md hidden-lg">
-	  <h2>About Me</h2>
-      <h5>Photo of me:</h5>
-      <div class="fakeimg">Fake Image</div>
-      <p>Some text about me in culpa qui officia deserunt mollit anim..</p>
-      <h3>Some Links</h3>
-      <p>Lorem ipsum dolor sit ame.</p>
+	  <h2>About Crowd Funding</h2>
+     
+      <p>Crowd Funding helps artists, techies, NGOS, and other creators find the resources and support they need to make their ideas a reality. To date, tens of thousands of creative projects — big and small — have come to life with the support of the Crowd Funding community.</p>
+      <h3>Links</h3>
+      <p>https://www.crowdfunding.com</p>
     </div>
     <!-- add your code here akshay-->
 	<div class="col-sm-8">
@@ -86,9 +91,9 @@
     <div style="postion:right">
         
       <ul class="nav navbar-nav">
-	    <li ><a href="http://localhost/completeproject/MyProject.php#">LiveProject</a></li>
-        <li><a href="http://localhost/completeproject/DoneProject.php#" >DoneProjects</a></li>
-		<li><a href="#">CreateProjects</a></li>
+	    <li><a  href="MyProject.php" >LiveProject</a></li>
+        <li><a style="color:white" href="MyDoneProject.php">DoneProjects</a></li>
+		<li><a href="CreateProject.php">CreateProjects</a></li>
       </ul>
     </div>	
   </div>
@@ -103,37 +108,50 @@
 	  
         <div class="col-md-8 col-sm-8 nopadding">
 
+
+
+
+
 <?php
-$title=$_POST['title'];
-$description=$_POST['description'];
 
-$name=$_POST['name'];
-$emailid=$_POST['emailid'];
-$contact=$name.",".$emailid;
+$username=$_SESSION["users"];
+//echo $username;
+$mysqli = new mysqli("localhost", "root","","project");
 
-$stage1=$_POST['stage1from'].",".$_POST['stage1to'].",".$_POST['stage1cost'];
-$stage2=$_POST['stage2from'].",".$_POST['stage2to'].",".$_POST['stage2cost'];
-$stage3=$_POST['stage3from'].",".$_POST['stage3to'].",".$_POST['stage3cost'];
-$stage4=$_POST['stage4from'].",".$_POST['stage4to'].",".$_POST['stage4cost'];
+$userquery = $mysqli->query("SELECT projectId FROM createp Where createName= '$username'");
 
-$funding=$_POST['accnumber'].",".$_POST['accname'].",".$_POST['acccode'];
-
-$projectid=(int)$_POST['projectid'];
-
-$mysqli = new mysqli("localhost", "root","","myproject");
-$sql="UPDATE projectslist SET projectName='$title' , description='$description', contactInfo='.$contact.' , fundingDetails='.$funding.' WHERE projectId=".$projectid;
-if($mysqli->query($sql)==true)
+if($userquery==false)
 {
+	echo "error occured";
 }
-$sql="UPDATE statusreport SET stage1='$stage1' ,stage2='$stage2' , stage3='$stage3',stage4='$stage4'  WHERE projectId=".$projectid;
-if($mysqli->query($sql)==true)
+else
 {
+	while ($row = mysqli_fetch_row($userquery))
+	{
+		$projectid=(int)$row[0];
+		
+			$projectquery = $mysqli->query("SELECT * FROM projectlist Where completed=TRUE AND projectId= $projectid");
+			while($row1= mysqli_fetch_row($projectquery))
+			{
+				echo '
+          <div class="col-sm-4" id="a">
+            <div class="table-left wow fadeInUp" data-wow-delay="0.4s">
+              <div class="pricing-details">
+                <h2 id="b">'.$row1[1].'</h2>           
+                <p id="c">'.$row1[2].'</p>
+				<form action="ReadMore.php" method="post">
+				<input type="text" style="display:none" name="name" value="'.$projectid.'"><br>
+				<input class="btn btn-primary btn-action btn-fill" type="submit" value="ReadMore">
+				</form>
+              </div>
+            </div>
+          </div>';
+			}
+		
+	}
 }
 
-
-?>
-
-<h1 style="color:MediumSeaGreen;" >EDITED SUCCESSFULLY</h1>		
+?>		
 		
       </div>
 
@@ -148,11 +166,8 @@ if($mysqli->query($sql)==true)
 </div>
 
 <div class="jumbotron text-center" style="margin-bottom:0">
-  <p>Footer</p>
+  <p>Thanks for visiting Crowd Funding</p>
 </div>
-</script>
 
 </body>
-</html>
-
-
+</html>     

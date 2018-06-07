@@ -29,8 +29,8 @@
 <body>
 
 <div class="jumbotron text-center" style="margin-bottom:0;background-color:#0584C5;color:white;">
-  <h1>WEB_APP</h1>
-  <p>CAPTION</p> 
+  <h1>Crowd Funding</h1>
+  <p>A place to expand your project</p> 
 </div>
 
 <nav class="navbar navbar-inverse">
@@ -61,15 +61,15 @@
         <li ><a href="http://localhost/completeproject/HomePage.php">Live Projects</a></li>
         <li><a href="http://localhost/completeproject/DoneProject.php">Done Projects</a></li>
 		<li class="active"><a href="http://localhost/completeproject/MyProject.php">My Projects</a></li>
-		<li><a href="#">Recommendatios</a></li>
+		<li><a href="http://localhost/completeproject/recommendation.php">Recommendatios</a></li>
       </ul>
       <hr class="hidden-sm hidden-md hidden-lg">
-	  <h2>About Me</h2>
-      <h5>Photo of me:</h5>
-      <div class="fakeimg">Fake Image</div>
-      <p>Some text about me in culpa qui officia deserunt mollit anim..</p>
-      <h3>Some Links</h3>
-      <p>Lorem ipsum dolor sit ame.</p>
+	  <h2>About Crowd Funding</h2>
+      <h5>Image:</h5>
+      <div><img src="obama1.jpg" alt="Italian Trulli"></div>
+      <p>Crowd Funding helps artists, techies, NGOS, and other creators find the resources and support they need to make their ideas a reality. To date, tens of thousands of creative projects — big and small — have come to life with the support of the Crowd Funding community.</p>
+      <h3>Links</h3>
+      <p>https://www.crowdfunding.com</p>
     </div>
     <!-- add your code here akshay-->
 	<div class="col-sm-8">
@@ -86,9 +86,9 @@
     <div style="postion:right">
         
       <ul class="nav navbar-nav">
-	    <li><a style="color:white" href="#" >LiveProject</a></li>
-        <li><a href="MyDoneProject.php">DoneProjects</a></li>
-		<li><a href="#">CreateProjects</a></li>
+	    <li ><a href="http://localhost/completeproject/MyProject.php">LiveProject</a></li>
+        <li><a href="http://localhost/completeproject/DoneProject.php" >DoneProjects</a></li>
+		<li><a href="http://localhost/completeproject/CreateProject.php">CreateProjects</a></li>
       </ul>
     </div>	
   </div>
@@ -102,50 +102,75 @@
       <div class="container">
 	  
         <div class="col-md-8 col-sm-8 nopadding">
-		
+
 <?php
-$user=1;
-$mysqli = new mysqli("localhost", "root","","myproject");
+$title=$_POST['title'];
+$description=$_POST['description'];
+$category=(int)$_POST['category'];
 
-$userquery = $mysqli->query("SELECT projectId FROM userslist Where userId=1");
+$fromdate=$_POST['fromdate'];
+$todate=$_POST['todate'];
+$requiredfunds=(int)$_POST['requiredfunds'];
 
-if($userquery==false)
+$phno=(int)$_POST['phno'];
+$emailid=$_POST['emailid'];
+
+$fund1=(int)$_POST['fund1'];
+$reward11=$_POST['reward11'];
+$reward12=$_POST['reward12'];
+
+$fund2=(int)$_POST['fund2'];
+$reward21=$_POST['reward21'];
+$reward22=$_POST['reward22'];
+
+$fund3=(int)$_POST['fund3'];
+$reward31=$_POST['reward31'];
+$reward32=$_POST['reward32'];
+
+$fund4=(int)$_POST['fund4'];
+$reward41=$_POST['reward41'];
+$reward42=$_POST['reward42'];
+
+$accnumber=(int)$_POST['accnumber'];
+$accname=$_POST['accname'];
+$acccode=$_POST['ifsccode'];
+
+//update queries
+$mysqli = new mysqli("localhost", "root","","project");
+$updateprojectquery="UPDATE projectlist SET projectName='$title'  WHERE projectId=2";//,description='$description',fromD='$fromdate',toD='$todate',amountN='$requiredfunds',category='$category',phoneNo='$phno',email='$emailid' WHERE projectId=2";
+if($mysqli->query($updateprojectquery )==true)
 {
-	echo "error occured";
+
 }
 else
 {
-	while ($row = mysqli_fetch_row($userquery))
-	{
-		$projectid=$row[0];
-		
-		//splitting the projectid
-		$projectids=explode(",",$projectid);
-		
-		for($i=0;$i<count($projectids);$i++)
-		{
-		$projectquery = $mysqli->query("SELECT * FROM projectslist Where projectId= $projectids[$i]");
-			while($row1= mysqli_fetch_row($projectquery))
-			{
-				echo '
-          <div class="col-sm-4" id="a">
-            <div class="table-left wow fadeInUp" data-wow-delay="0.4s">
-              <div class="pricing-details">
-                <h2 id="b">'.$row1[1].'</h2>           
-                <p id="c">'.$row1[2].'</p>
-				<form action="EditPage.php" method="post">
-				<input type="text" style="display:none" name="name" value="'.$projectids[$i].'"><br>
-				<input class="btn btn-primary btn-action btn-fill" type="submit" value="EDIT">
-				</form>
-              </div>
-            </div>
-          </div>';
-			}
-		}
-	}
+	
 }
 
-?>		
+
+$insertaccountdetails="UPDATE account SET cardHolderName='$accname',accountNo='$accnumber',IFSC='$acccode' WHERE projectId=2";
+if($mysqli->query($insertaccountdetails )==true)
+{
+
+}
+else
+{
+	
+}
+
+
+$insertrewards="UPDATE rewards SET fund1='$fund1',reward11='$reward11',reward12='$reward12',fund2='$fund2',reward21='$reward21',reward22='$reward22',fund3='$fund3',reward31='$reward31',reward32='$reward32',fund4='$fund4',reward41='$reward41',reward42='$reward42' WHERE projectId=2";
+if($mysqli->query($insertrewards )==true)
+{
+	
+}
+else
+{
+	
+}
+?>
+
+<h1 style="color:MediumSeaGreen;" >EDITED SUCCESSFULLY</h1>		
 		
       </div>
 
@@ -162,6 +187,9 @@ else
 <div class="jumbotron text-center" style="margin-bottom:0">
   <p>Footer</p>
 </div>
+</script>
 
 </body>
 </html>
+
+

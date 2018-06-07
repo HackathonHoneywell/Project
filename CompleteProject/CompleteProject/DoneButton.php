@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,8 +32,8 @@
 <body>
 
 <div class="jumbotron text-center" style="margin-bottom:0;background-color:#0584C5;color:white;">
-  <h1>WEB_APP</h1>
-  <p>CAPTION</p> 
+  <h1>Crowd Funding</h1>
+  <p>A place to expand your project</p> 
 </div>
 
 <nav class="navbar navbar-inverse">
@@ -58,56 +61,74 @@
     <div class="col-sm-4">
       
       <ul class="nav nav-pills nav-stacked">
-        <li class="active"><a href="http://localhost/completeproject/HomePage.php">Live Projects</a></li>
+        <li ><a href="http://localhost/completeproject/HomePage.php">Live Projects</a></li>
         <li><a href="http://localhost/completeproject/DoneProject.php">Done Projects</a></li>
-        <li><a href="http://localhost/completeproject/MyProject.php">My Projects</a></li>
-		<li><a href="#">Recommendatios</a></li>
+    <li class="active"><a href="http://localhost/completeproject/MyProject.php">My Projects</a></li>
+    <li><a href="http://localhost/completeproject/recommendation.php">Recommendatios</a></li>
       </ul>
       <hr class="hidden-sm hidden-md hidden-lg">
-	  <h2>About Me</h2>
-      <h5>Photo of me:</h5>
-      <div class="fakeimg">Fake Image</div>
-      <p>Some text about me in culpa qui officia deserunt mollit anim..</p>
-      <h3>Some Links</h3>
-      <p>Lorem ipsum dolor sit ame.</p>
+    <h2>About Crowd Funding</h2>
+      <h5>Image:</h5>
+      <div><img src="obama1.jpg" alt="Italian Trulli"></div>
+      <p>Crowd Funding helps artists, techies, NGOS, and other creators find the resources and support they need to make their ideas a reality. To date, tens of thousands of creative projects — big and small — have come to life with the support of the Crowd Funding community.</p>
+      <h3>Links</h3>
+      <p>https://www.crowdfunding.com</p>
     </div>
     <!-- add your code here akshay-->
-	<div class="col-sm-8">
-		<div class="wrapper">
+  <div class="col-sm-8">
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+     
+    </div>
+    <div style="postion:right">
+        
+      <ul class="nav navbar-nav">
+      <li><a style="color:white" href="MyProject.php" >LiveProject</a></li>
+        <li><a href="MyDoneProject.php">DoneProjects</a></li>
+    <li><a href="CreateProject.php">CreateProjects</a></li>
+      </ul>
+    </div>  
+  </div>
+</nav>
+
+  <div class="col-sm-8">
+    <div class="wrapper">
   <div class="main app form" id="main"><!-- Main Section-->
 
     <div id="pricing" class="pricing-section text-center">
       <div class="container">
-	  
+    
         <div class="col-md-8 col-sm-8 nopadding">
-			  <?php
-	  session_start(); 
-$mysqli = new mysqli("localhost", "root","","myproject");
+    
+<?php
+ $e=$_POST['names'];
+ 
+    $mysqli = new mysqli("localhost","root","","project");
 
-$query3 = $mysqli->query("SELECT * from projectslist ORDER BY likes DESC");
-	while ($row = mysqli_fetch_row($query3))
-	{    $str = $row[2];
-       $substr =  substr($str, 0,30); 
-       $substr = $substr.".....";
-		 $_SESSION["user"] = $row[0];
-			echo '<div class="col-sm-4"><div class="table-left wow fadeInUp" data-wow-delay="0.4s"><div class="pricing-details"><h2>'.$row[1].'</h2><p>'.$substr.'</p><form action="ReadMoreDP1.php" method="post"><input type="text" style="display:none" name="name" value="'.$row[0].'"><br><input class="btn btn-primary btn-action btn-fill" type="submit" value="ReadMore"></form></div></div></div>';
-		
-	}
+$sql1 = $mysqli->query("SELECT moneyFunded from projectlist WHERE projectId=".$e);
+while($row = mysqli_fetch_row($sql1))
 	
+{   echo '<pre><h3>Money '.$row[0]. ' is funded for the project</h3></pre>';
 	
-
-mysqli_close($mysqli);
-	
-
+}
+ 
+ $sql= $mysqli->query("UPDATE projectlist SET completed=TRUE WHERE projectId=".$e);
+	mysqli_close($mysqli); 
 ?>
-	
-		
+
       </div>
 
      </div>         
     </div>
    </div>
    
+  </div>
   </div>
   </div>
   </div>
